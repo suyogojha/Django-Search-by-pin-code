@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div id="app">
+    <div class="container">
+
+        <div class="row mt-5 pt-5">
+            <div class="col-md-4">
+                <label>Enter pincode</label>
+                <input class="form-control"  v-model="pincode" type="text" placeholder="Enter pincode">
+            </div>
+            <div class="col-md-4">
+                <label>Select Km</label>
+                <select class="form-control" v-model="km">
+                    <option selected>Choose</option>
+                    <option value="1">1 KM</option>
+                    <option value="2">2 KM</option>
+                    <option value="9">9 KM</option>
+
+
+                </select>
+            </div>
+            <div class="col-md-4">
+
+                <button class="btn btn-success mt-4" v-on:click="getRest()">Submit</button>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="row mt-5 pt-5">
+            <div class="col-md-3" v-for="restraunt in restraunts">
+                <div class="card shadow-lg" style="width: 18rem;">
+                    <img :src="restraunt.image"
+                        class="card-img-top" alt=".." style="height:200px">
+                    <div class="card-body">
+                        <h5 class="card-title">[[restraunt.name]] </h5>
+                        <p class="card-text">[[(restraunt.description).substring(0 , 40)]]</p>
+                        <a href="#" class="btn btn-primary">[[restraunt.distance]] KM</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
+
+<script>
+    const app = new Vue({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                pincode : '',
+                km : '',
+                tasks: [],
+                restraunts : []
+            }
+        },
+        created() {
+            this.tasks = ['do this 🐱‍🐉', 'and that 🤳'];
+        },
+        methods : {
+            getRest(){
+                if(this.pincode == ''){
+                    alert('Pincode cannot be null');
+                    return;
+                }
+                
+                fetch(`/api/get/?pincode=${this.pincode}&km=${this.km}`)
+                .then(result => result.json())
+                .then(response => {
+                    this.restraunts = response
+                })
+            }
+        }
+    });
+</script>
+
+
+
+{% endblock %}
